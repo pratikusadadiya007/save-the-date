@@ -1,16 +1,230 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Save the Date | Pratik & Isha</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Save the Date | Pratik & Isha</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'serif'],
+            sans: ['Montserrat', 'sans-serif'],
+            script: ['"Great Vibes"', 'cursive'],
+          }
+        }
+      }
+    }
+  </script>
 
+  <!-- External Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body {
+      font-family: "Montserrat", sans-serif;
+      background-color: #faf9f6;
+      color: #2c2c2c;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .fade-in-up {
+      animation: fadeInUp 1.2s ease-out forwards;
+    }
+
+    .scale-in {
+      opacity: 0;
+      animation: scaleIn 1s ease-out 0.5s forwards;
+    }
+
+    /* Menu Transition */
+    .menu-transition {
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(10px) scale(0.95);
+      pointer-events: none;
+    }
+
+    .menu-open {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="capture-area" class="min-h-screen flex flex-col relative overflow-hidden bg-[#faf9f6]">
+    <!-- Background Image with Overlay -->
+    <div class="absolute inset-0 z-0" style="background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop'); background-position: center; background-size: cover;">
+      <div class="absolute inset-0 bg-[rgba(0,0,0,0.4)] backdrop-blur-[2px]"></div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col items-center justify-center relative z-10 px-4 py-20 text-center text-white">
+      <div class="max-w-4xl mx-auto flex flex-col items-center fade-in-up">
+        <div class="mb-8 scale-in">
+          <i data-lucide="heart" class="w-10 h-10 text-rose-300 fill-[rgba(253,164,175,0.2)]" stroke-width="1.5"></i>
+        </div>
+
+        <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl mb-6 font-light tracking-widest uppercase">
+          Pratik <span class="font-script text-rose-300 mx-2 lowercase text-6xl md:text-8xl lg:text-9xl">&amp;</span> Isha
+        </h1>
+
+        <h2 class="font-sans text-sm md:text-base tracking-[0.3em] uppercase mb-12 text-rose-100">
+          Are Getting Married
+        </h2>
+
+        <div class="w-24 h-[1px] bg-[rgba(254,205,211,0.5)] mb-12"></div>
+
+        <div class="flex flex-col items-center mb-12 space-y-4">
+          <h3 class="font-serif text-5xl md:text-7xl font-light tracking-[0.2em] uppercase">Save</h3>
+          <h3 class="font-serif text-5xl md:text-7xl font-light tracking-[0.2em] uppercase">The</h3>
+          <h3 class="font-serif text-5xl md:text-7xl font-light tracking-[0.2em] uppercase">Date</h3>
+        </div>
+
+        <h4 class="font-sans text-lg md:text-xl tracking-[0.2em] uppercase mb-12 text-rose-100 font-medium">
+          12th December, <span id="current-year">2026</span>
+        </h4>
+
+        <a href="#events" id="see-you-soon" class="inline-block px-10 py-4 border border-[rgba(254,205,211,0.5)] rounded-full font-sans text-sm tracking-[0.2em] uppercase hover:bg-[rgba(255,241,242,0.1)] hover:border-rose-200 transition-all duration-300" style="pointer-events: none;">
+          See you soon!
+        </a>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 py-6 text-center text-[rgba(255,255,255,0.6)] font-sans text-xs tracking-wider">
+      <p>© <span id="footer-year">2026</span>. Powered and secured by PRISHA.</p>
+    </footer>
+  </div>
+
+  <!-- Floating Download Menu -->
+  <div id="download-container" class="hidden fixed bottom-6 right-6 z-50 flex flex-col items-end space-y-3">
+    <div id="download-menu" class="flex flex-col space-y-2 bg-[rgba(255,255,255,0.1)] backdrop-blur-md border border-[rgba(255,255,255,0.2)] p-2 rounded-2xl shadow-2xl menu-transition">
+      <button onclick="downloadAs('jpg')" class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-[rgba(255,255,255,0.2)] text-white transition-colors cursor-pointer w-full text-left">
+        <i data-lucide="image" class="w-5 h-5 text-rose-200"></i>
+        <span class="font-sans text-sm font-medium tracking-wide">Download JPG</span>
+      </button>
+      <button onclick="downloadAs('pdf')" class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-[rgba(255,255,255,0.2)] text-white transition-colors cursor-pointer w-full text-left">
+        <i data-lucide="file-text" class="w-5 h-5 text-rose-200"></i>
+        <span class="font-sans text-sm font-medium tracking-wide">Download PDF</span>
+      </button>
+    </div>
+    
+    <button id="download-toggle" class="hidden bg-[rgba(255,228,230,0.2)] hover:bg-[rgba(255,228,230,0.3)] backdrop-blur-md border border-[rgba(254,205,211,0.3)] text-white p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer" title="Download Save the Date">
+      <i data-lucide="download" class="w-6 h-6"></i>
+    </button>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-[rgba(0,0,0,0.6)] backdrop-blur-sm">
+    <div class="flex flex-col items-center space-y-4 text-white">
+      <i data-lucide="loader-2" class="w-10 h-10 animate-spin text-rose-300"></i>
+      <p class="font-sans tracking-widest uppercase text-sm">Generating High Quality File...</p>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Set dynamic year
+    const currentYear = new Date().getFullYear();
+    document.getElementById('current-year').textContent = currentYear;
+    document.getElementById('footer-year').textContent = currentYear;
+
+    // Menu toggle logic
+    const downloadToggle = document.getElementById('download-toggle');
+    const downloadMenu = document.getElementById('download-menu');
+
+    downloadToggle.addEventListener('click', () => {
+      downloadMenu.classList.toggle('menu-open');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!downloadToggle.contains(e.target) && !downloadMenu.contains(e.target)) {
+        downloadMenu.classList.remove('menu-open');
+      }
+    });
+
+    // Download logic
+    async function downloadAs(format) {
+      const captureArea = document.getElementById('capture-area');
+      const downloadContainer = document.getElementById('download-container');
+      const seeYouSoon = document.getElementById('see-you-soon');
+      const loadingOverlay = document.getElementById('loading-overlay');
+      
+      // Hide UI elements for capture
+      downloadContainer.style.display = 'none';
+      seeYouSoon.style.display = 'none';
+      loadingOverlay.classList.remove('hidden');
+      loadingOverlay.classList.add('flex');
+      
+      // Wait a bit for UI to update
+      await new Promise(resolve => setTimeout(resolve, 150));
+      
+      try {
+        const canvas = await html2canvas(captureArea, { 
+          useCORS: true, 
+          scale: 2, 
+          backgroundColor: '#faf9f6',
+          logging: false
+        });
+        
+        if (format === 'jpg') {
+          const dataUrl = canvas.toDataURL('image/jpeg', 1.0);
+          const link = document.createElement('a');
+          link.download = 'Pratik_Isha_SaveTheDate.jpg';
+          link.href = dataUrl;
+          link.click();
+        } else {
+          const { jsPDF } = window.jspdf;
+          const imgData = canvas.toDataURL('image/jpeg', 1.0);
+          const pdf = new jsPDF({
+            orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
+            unit: 'px',
+            format: [canvas.width, canvas.height]
+          });
+          pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
+          pdf.save('Pratik_Isha_SaveTheDate.pdf');
+        }
+      } catch (error) {
+        console.error('Error generating file:', error);
+        alert('Failed to generate high-quality export. Please try again.');
+      } finally {
+        // Restore UI elements
+        downloadContainer.style.display = 'flex';
+        seeYouSoon.style.display = 'inline-block';
+        loadingOverlay.classList.add('hidden');
+        loadingOverlay.classList.remove('flex');
+        
+        // Close menu
+        downloadMenu.classList.remove('menu-open');
+      }
+    }
+  </script>
+</body>
+</html>
